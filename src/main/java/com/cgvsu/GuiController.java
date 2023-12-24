@@ -1,5 +1,6 @@
 package com.cgvsu;
 
+import com.cgvsu.objreader.ObjReaderException;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
@@ -11,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
+import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
@@ -20,6 +23,8 @@ import javax.vecmath.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
+
+import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
 
 public class GuiController {
 
@@ -81,11 +86,16 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
-            // todo: обработка ошибок
-        } catch (IOException exception) {
+            if (mesh == null){
+                throwExceptionWindow();
+
+            }
+        } catch (IOException | RuntimeException exception) {
+            throwExceptionWindow();
 
         }
     }
+
 
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
