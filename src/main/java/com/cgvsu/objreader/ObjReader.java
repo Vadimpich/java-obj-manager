@@ -63,6 +63,8 @@ public class ObjReader {
 
 	protected void readModel(String content) {
 		Scanner scanner = new Scanner(content);
+		float xMax = Float.MIN_VALUE;
+		float xMin = Float.MAX_VALUE;
 		scanner.useLocale(Locale.ROOT);
 		while (scanner.hasNextLine()) {
 			lineIndex++;
@@ -77,14 +79,20 @@ public class ObjReader {
 			String[] wordsInLineWithoutToken =  Arrays.copyOfRange(wordsInLine, 1, wordsInLine.length);
 
 			switch (token) {
-				case OBJ_VERTEX_TOKEN -> model.addVertex(parseVector3f(wordsInLineWithoutToken));
+				case OBJ_VERTEX_TOKEN ->{
+					Vector3f parsedVector3f = parseVector3f(wordsInLineWithoutToken);
+					model.addVertex(parsedVector3f);
+					xMax = Math.max(parsedVector3f.x,xMax);
+					xMin = Math.min(parsedVector3f.x,xMin);
+					model.xSize = Math.max(model.xSize,Math.abs(xMin - xMax));
+				}
 				case OBJ_TEXTURE_TOKEN -> model.addTextureVertex(parseVector2f(wordsInLineWithoutToken));
 				case OBJ_NORMAL_TOKEN -> model.addNormal(parseVector3f(wordsInLineWithoutToken));
 				case OBJ_FACE_TOKEN -> handleFace(wordsInLineWithoutToken);
 				case OBJ_GROUP_TOKEN -> handleGroup(wordsInLineWithoutToken);
 				default -> {
 					if (!isSoft) {
-						//throw new TokenException(lineIndex);
+						throw new TokenException(lineIndex);
 					}
 				}
 			}

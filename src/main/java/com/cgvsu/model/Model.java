@@ -12,12 +12,7 @@ public class Model {
     public List<Vector2f> textureVertices = new ArrayList<>();
     public List<Vector3f> normals = new ArrayList<>();
     public List<Polygon> polygons = new ArrayList<>();
-
-
-
-    // Добавленные мной поля и методы
-    // TODO: скопировать себе в проект все, что находится ниже
-
+    public float xSize = 0;
 
 
     private List<Group> groups = new ArrayList<>();

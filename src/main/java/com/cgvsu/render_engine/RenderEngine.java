@@ -1,6 +1,7 @@
 package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.cgvsu.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,8 +14,23 @@ public class RenderEngine {
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
-            final Model mesh,
+            final List<Model> models,
             final int width,
+            final int height)
+    {
+
+
+        for (Model mesh : models) {
+            renderModel(graphicsContext,mesh,camera, width, height);
+        }
+    }
+
+    private static void renderModel(
+            final GraphicsContext graphicsContext,
+            final Model mesh,
+            Camera camera,
+            final int width,
+
             final int height)
     {
         Matrix4f modelMatrix = rotateScaleTranslate();
