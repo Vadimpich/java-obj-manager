@@ -41,7 +41,7 @@ import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
 
 public class GuiController {
 
-    final private float TRANSLATION = 10F;
+    final private float TRANSLATION = 2F;
     private float x = 0;
 
     @FXML
@@ -166,6 +166,11 @@ public class GuiController {
         } catch (IOException | RuntimeException exception) {
             throwExceptionWindow();
         }
+    }
+    @FXML
+    private void clearAllModels(){
+        models.clear();
+        camera.setPosition(new Vector3f(0,0,10));
     }
 
     private void translateModel(Model model, float x, float y, float z) {
