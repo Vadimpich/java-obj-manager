@@ -1,85 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="576a9cb2-d592-447b-a8c8-dcc1567f4d2b" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="36ff5e2e-0ba3-4cc4-82a3-9c15f7599910" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Interface" />
-        <option value="Class" />
-      </list>
-    </option>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="215D9OuQtCVeBkKahV1oqt1bSmj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
-  <component name="ProjectId" id="1lpqXUhLK3Ik2Gqr2nTxU8EKoVZ" />
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/kg2020/task4/drawer" />
-    <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="project.propGUI" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\XXX\УниверРезерв\Java_KG_3sem\KG2020_G41_Task4\src\kg2020\task4\drawer" />
-      <recent name="D:\XXX\УниверРезерв\Java_KG_3sem\KG2020_G41_Task4\src\kg2020\task4" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="kg2020.task4" />
-      <recent name="kg2020.task4.screen" />
-      <recent name="kg2020.task4.drawer" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\XXX\УниверРезерв\Java_KG_3sem\KG2020_G41_Task4\src\kg2020\task4" />
-    </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Application.MainWindow (1)">
-    <configuration name="MainWindow" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="MainWindow" />
-      <module name="KG2020_G41_Task4" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MainWindow" type="Application" factoryName="Application" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="kg2020.task4.MainWindow" />
-      <module name="KG2020_G41_Task4" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/vadim/Repos/KG2020.4task-master",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="kg2021examples_task4threedimensions.Main" />
+      <module name="Test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="kg2020.task4.models.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MainWindow" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="kg2020.task4.MainWindow" />
-      <module name="KG2020_G41_Task4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="kg2020.task4.threeD.*" />
+          <option name="PATTERN" value="kg2021examples_task4threedimensions.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -89,34 +46,31 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.MainWindow" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
-  <component name="SvnConfiguration">
-    <configuration />
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-1.8.0_392-corretto-1.8.0_392-249ae16d76d6-ec8bc16d" />
+      </set>
+    </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="576a9cb2-d592-447b-a8c8-dcc1567f4d2b" name="Default Changelist" comment="" />
-      <created>1608304420209</created>
+      <changelist id="36ff5e2e-0ba3-4cc4-82a3-9c15f7599910" name="Changes" comment="" />
+      <created>1637221903075</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1608304420209</updated>
+      <updated>1637221903075</updated>
+      <workItem from="1703426802508" duration="102000" />
+      <workItem from="1703427127242" duration="19000" />
     </task>
     <servers />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
