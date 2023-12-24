@@ -156,11 +156,17 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
-            if (mesh == null){
+            Model newModel = ObjReader.read(fileContent);
+            if (newModel == null) {
                 throwExceptionWindow();
+            }
+            translateModel(newModel, x, 0, 0);
+            models.add(newModel);
+            x += newModel.xSize;
         } catch (IOException | RuntimeException exception) {
             throwExceptionWindow();
+        }
+    }
 
     private void translateModel(Model model, float x, float y, float z) {
         for (com.cgvsu.math.Vector3f vertex : model.getVertices()) {
