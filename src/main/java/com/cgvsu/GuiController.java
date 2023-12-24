@@ -15,8 +15,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.nio.file.Files;
@@ -31,11 +31,18 @@ import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
 
 public class GuiController {
 
-    final private float TRANSLATION = 1F;
+    final private float TRANSLATION = 10F;
+    private float x = 0;
 
     @FXML
     AnchorPane anchorPane;
@@ -43,7 +50,7 @@ public class GuiController {
     @FXML
     private Canvas canvas;
 
-    private Model mesh = null;
+    private List<Model> models = new ArrayList<>();
 
     private Camera camera = new Camera(
             new Vector3f(0, 0, 10),
@@ -79,9 +86,7 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
-            if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
-            }
+            renderModels(width, height);
         });
 
 
@@ -131,6 +136,10 @@ public class GuiController {
         });
     }
 
+    private void renderModels(double width, double height) {
+        RenderEngine.render(canvas.getGraphicsContext2D(), camera, models, (int) width, (int) height);
+    }
+
     @FXML
     private void onOpenModelMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
@@ -150,11 +159,14 @@ public class GuiController {
             mesh = ObjReader.read(fileContent);
             if (mesh == null){
                 throwExceptionWindow();
-
-            }
         } catch (IOException | RuntimeException exception) {
             throwExceptionWindow();
 
+    private void translateModel(Model model, float x, float y, float z) {
+        for (com.cgvsu.math.Vector3f vertex : model.getVertices()) {
+            vertex.x += x;
+            vertex.y += y;
+            vertex.z += z;
         }
     }
 
