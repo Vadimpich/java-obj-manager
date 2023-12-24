@@ -4,19 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4278c1e-8a4b-4623-b2c5-d0d80910ca51" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+    <list default="true" id="b4278c1e-8a4b-4623-b2c5-d0d80910ca51" name="Changes" comment="new obj reader">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/GuiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/GuiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/math/Vector2f.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/math/Vector2f.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/math/Vector3f.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/math/Vector3f.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/model/Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/model/Polygon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/model/Polygon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/objreader/ObjReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/objreader/ObjReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgvsu/render_engine/Camera.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgvsu/render_engine/Camera.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,12 +98,25 @@
       <workItem from="1703428761471" duration="27000" />
       <workItem from="1703428796623" duration="97000" />
       <workItem from="1703428895911" duration="3591000" />
-      <workItem from="1703432525494" duration="334000" />
+      <workItem from="1703432525494" duration="16089000" />
     </task>
+    <task id="LOCAL-00001" summary="new obj reader">
+      <option name="closed" value="true" />
+      <created>1703432882642</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1703432882642</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="new obj reader" />
+    <option name="LAST_COMMIT_MESSAGE" value="new obj reader" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
