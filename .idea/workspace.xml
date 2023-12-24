@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="36ff5e2e-0ba3-4cc4-82a3-9c15f7599910" name="Changes" comment="" />
+    <list default="true" id="36ff5e2e-0ba3-4cc4-82a3-9c15f7599910" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picture1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/picture2.png" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file://$USER_HOME$/sdk/go1.21.5" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -24,6 +40,12 @@
     "Application.Main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "main",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/vadim/Repos/KG2020.4task-master",
     "nodejs_package_manager_path": "npm",
@@ -44,16 +66,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Main" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-1.8.0_392-corretto-1.8.0_392-249ae16d76d6-ec8bc16d" />
+        <option value="bundled-gosdk-266795519c66-911b893a1778-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-233.13135.104" />
       </set>
     </attachedChunks>
   </component>
@@ -72,5 +89,9 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>
