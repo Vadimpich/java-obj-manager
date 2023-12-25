@@ -84,4 +84,5 @@ public class Model {
     public List<Group> getGroups() {
         return groups;
     }
+
 }

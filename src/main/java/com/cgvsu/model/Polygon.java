@@ -42,12 +42,6 @@ public class Polygon {
     }
 
 
-
-    // Добавленные мной поля и методы
-    // TODO: скопировать себе в проект все, что находится ниже
-
-
-
     private int lineIndex;
 
     public boolean hasTexture() {

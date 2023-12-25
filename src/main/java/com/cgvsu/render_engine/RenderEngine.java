@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cgvsu.math.Vector3f;
+import com.cgvsu.model.Polygon;
+import com.cgvsu.objreader.ObjReader;
 import javafx.scene.canvas.GraphicsContext;
 import javax.vecmath.*;
 import com.cgvsu.model.Model;
+import javafx.scene.shape.TriangleMesh;
+
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
 public class RenderEngine {
@@ -21,7 +25,7 @@ public class RenderEngine {
 
 
         for (Model mesh : models) {
-            renderModel(graphicsContext,mesh,camera, width, height);
+            if (mesh.viewMesh) renderModel(graphicsContext,mesh,camera, width, height);
         }
     }
 
@@ -71,4 +75,40 @@ public class RenderEngine {
                         resultPoints.get(0).y);
         }
     }
+
+    public void renderTexture(
+            final GraphicsContext graphicsContext,
+            final Camera camera,
+            final List<Model> models,
+            final int width,
+            final int height
+    ){
+        for (Model mesh : models){
+            if (mesh.viewTexture){
+                renderModelTexture(graphicsContext,mesh);
+            }
+        }
+    }
+
+    public void renderModelTexture(GraphicsContext graphicsContext,Model mesh) {
+        for (Polygon polygon : mesh.polygons) {
+            List<Integer> vertices = polygon.getVertexIndices();
+            List<Integer> textureVertices = polygon.getTextureVertexIndices();
+
+            if (vertices.size() == textureVertices.size() && vertices.size() > 2) {
+                for (int i = 0; i < vertices.size() - 2; i++) {
+                    Vector3f v0 = vertices.get(0);
+                    Vector3f v1 = vertices.get(i + 1);
+                    Vector3f v2 = vertices.get(i + 2);
+
+                    Vector2f t0 = textureVertices.get(0);
+                    Vector2f t1 = textureVertices.get(i + 1);
+                    Vector2f t2 = textureVertices.get(i + 2);
+
+                    renderTriangleWithTexture(graphicsContext, v0, v1, v2, t0, t1, t2);
+                }
+            }
+        }
+    }
+
 }
