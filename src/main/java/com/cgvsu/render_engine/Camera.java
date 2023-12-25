@@ -62,4 +62,14 @@ public class Camera {
     private float aspectRatio;
     private float nearPlane;
     private float farPlane;
+
+    public int getCenteredModel() {
+        return centeredModel;
+    }
+
+    public void setCenteredModel(int centeredModel) {
+        this.centeredModel = centeredModel;
+    }
+
+    private int centeredModel = 0;
 }

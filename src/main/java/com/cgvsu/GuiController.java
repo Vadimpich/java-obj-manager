@@ -73,6 +73,8 @@ public class GuiController {
 
     private List<Model> models = new ArrayList<>();
 
+    private List<Float> modelCenters = new ArrayList<>();
+
     private Camera camera;
 
     private List<Camera> cameras = new ArrayList<>();
@@ -185,6 +187,7 @@ public class GuiController {
             }
             translateModel(newModel, x, 0, 0);
             models.add(newModel);
+            modelCenters.add(x);
             x += newModel.xSize;
         } catch (IOException | RuntimeException exception) {
             System.out.println(exception);
@@ -202,7 +205,9 @@ public class GuiController {
         CheckMenuItem lightingShow = new CheckMenuItem("Освещение");
         lightingShow.setSelected(false);
         RadioMenuItem pinCamera = new RadioMenuItem("Центрировать камеру");
-        pinCamera.setSelected(true);
+        pinCamera.setSelected(models.isEmpty());
+        int modelIndex = models.size();
+        pinCamera.setOnAction(actionEvent -> setCameraTarget(modelIndex));
 
         camerasPinGroup.getToggles().add(camerasGroup.getToggles().size()-1,pinCamera);
         modelSubMenu.getItems().add(pinCamera);
@@ -216,8 +221,15 @@ public class GuiController {
     }
 
     @FXML
+    private void setCameraTarget(int ind) {
+        camera.setCenteredModel(ind);
+        camera.setTarget(new Vector3f(modelCenters.get(ind), 0, 0));
+    }
+
+    @FXML
     private void clearModelsList() {
         modelsMenu.getItems().clear();
+        camerasPinGroup.getToggles().clear();
     }
 
     @FXML
@@ -254,8 +266,10 @@ public class GuiController {
 
     @FXML
     private void chooseCamera(int ind) {
-        System.out.println(ind);
         camera = cameras.get(ind);
+        if (!camerasPinGroup.getToggles().isEmpty()){
+            camerasPinGroup.selectToggle(camerasPinGroup.getToggles().get(camera.getCenteredModel()));
+        }
     }
 
 
@@ -264,7 +278,6 @@ public class GuiController {
         float dx = Math.signum(camera.getPosition().x) * (Math.abs(camera.getPosition().x) - TRANSLATION) - camera.getPosition().x;
         float dz = Math.signum(camera.getPosition().z) * (Math.abs(camera.getPosition().z) - TRANSLATION) - camera.getPosition().z;
         camera.movePosition(new Vector3f(dx, 0, dz));
-        System.out.println(camera.getPosition());
     }
 
     @FXML
@@ -272,7 +285,6 @@ public class GuiController {
         float dx = Math.signum(camera.getPosition().x) * (Math.abs(camera.getPosition().x) + TRANSLATION) - camera.getPosition().x;
         float dz = Math.signum(camera.getPosition().z) * (Math.abs(camera.getPosition().z) + TRANSLATION) - camera.getPosition().z;
         camera.movePosition(new Vector3f(dx, 0, dz));
-        System.out.println(camera.getPosition());
     }
 
     @FXML
@@ -284,7 +296,6 @@ public class GuiController {
         double dy = radius * Math.sin(angleY) - camera.getPosition().y;
         double dz = radius * Math.cos(angle) - camera.getPosition().z;
         camera.movePosition(new Vector3f((float) dx, (float) dy, (float) dz));
-        System.out.println(camera.getPosition());
     }
 
     @FXML
@@ -307,12 +318,10 @@ public class GuiController {
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-        System.out.println(52);
     }
 
     @FXML
     public void handleMouseWheel(float delta) {
-        System.out.println(delta);
         double radius = Math.sqrt(
                 camera.getPosition().z * camera.getPosition().z + camera.getPosition().x * camera.getPosition().x
         );
@@ -321,7 +330,5 @@ public class GuiController {
             float dz = Math.signum(camera.getPosition().z) * (Math.abs(camera.getPosition().z) - delta) - camera.getPosition().z;
             camera.movePosition(new Vector3f(dx, 0, dz));
         }
-        System.out.println(camera.getPosition());
-        System.out.println(radius);
     }
 }
