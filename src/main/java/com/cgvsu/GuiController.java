@@ -8,15 +8,21 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.nio.file.Files;
@@ -37,26 +43,36 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
 
 public class GuiController {
 
-    final private float TRANSLATION = 2F;
+    final private float TRANSLATION = 5F;
     private float x = 0;
 
     @FXML
     AnchorPane anchorPane;
 
     @FXML
+    private Menu modelsMenu;
+
+    @FXML
+    private Menu camerasMenu;
+    @FXML
     private Canvas canvas;
+
+    @FXML
+    private ToggleGroup camerasGroup = new ToggleGroup();
+
+    @FXML
+    private MenuItem addNewCamera;
 
     private List<Model> models = new ArrayList<>();
 
-    private Camera camera = new Camera(
-            new Vector3f(0, 0, 10),
-            new Vector3f(0, 0, 0),
-            1.0F, 1, 0.01F, 100
-    );
+    private Camera camera;
+
+    private List<Camera> cameras = new ArrayList<>();
 
     private float angle = 0;
     private float angleY = 0;
@@ -79,6 +95,7 @@ public class GuiController {
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
+
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
@@ -92,6 +109,8 @@ public class GuiController {
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
+
+        addCamera();
 
         canvas.setOnScroll(scrollEvent -> {
             float deltaY = (float) scrollEvent.getDeltaY();
@@ -156,6 +175,7 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
+            addToModelsList(fileName);
             Model newModel = ObjReader.read(fileContent);
             if (newModel == null) {
                 throwExceptionWindow();
@@ -167,11 +187,34 @@ public class GuiController {
             throwExceptionWindow();
         }
     }
+
     @FXML
-    private void clearAllModels(){
-        models.clear();
-        camera.setPosition(new Vector3f(0,0,10));
+    private void addToModelsList(Path fileName) {
+        Menu modelSubMenu = new Menu(fileName.toString());
+        CheckMenuItem polygonMeshShow = new CheckMenuItem("Полигональная сетка");
+        polygonMeshShow.setSelected(true);
+        CheckMenuItem textureShow = new CheckMenuItem("Текстура");
+        textureShow.setSelected(false);
+        CheckMenuItem lightingShow = new CheckMenuItem("Освещение");
+        lightingShow.setSelected(false);
+        modelSubMenu.getItems().add(polygonMeshShow);
+        modelSubMenu.getItems().add(textureShow);
+        modelSubMenu.getItems().add(lightingShow);
+        modelsMenu.getItems().add(modelSubMenu);
     }
+
+    @FXML
+    private void clearModelsList() {
+        modelsMenu.getItems().clear();
+    }
+
+    @FXML
+    private void clearAllModels() {
+        models.clear();
+        camera.setPosition(new Vector3f(0, 0, 100));
+        clearModelsList();
+    }
+
 
     private void translateModel(Model model, float x, float y, float z) {
         for (com.cgvsu.math.Vector3f vertex : model.getVertices()) {
@@ -179,6 +222,28 @@ public class GuiController {
             vertex.y += y;
             vertex.z += z;
         }
+    }
+
+    @FXML
+    private void addCamera() {
+        cameras.add(new Camera(
+                new Vector3f(0, 0, 10),
+                new Vector3f(0, 0, 0),
+                1.0F, 1, 0.01F, 100
+        ));
+        RadioMenuItem newCameraButton = new RadioMenuItem(String.format("Camera %d", cameras.size()));
+        newCameraButton.setSelected(true);
+        final int cameraIndex = cameras.size() - 1;
+        newCameraButton.setOnAction(event -> chooseCamera(cameraIndex));
+        camerasGroup.getToggles().add(cameraIndex,newCameraButton);
+        camerasMenu.getItems().add(newCameraButton);
+        chooseCamera(cameras.size() - 1);
+    }
+
+    @FXML
+    private void chooseCamera(int ind) {
+        System.out.println(ind);
+        camera = cameras.get(ind);
     }
 
 

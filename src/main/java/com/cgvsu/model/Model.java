@@ -3,6 +3,7 @@ package com.cgvsu.model;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,12 @@ public class Model {
     public List<Polygon> polygons = new ArrayList<>();
     public float xSize = 0;
 
+    public boolean viewMesh = true;
+    public boolean viewTexture = false;
+
+    public boolean viewLighting = false;
+
+    public Image texture = null;
 
     private List<Group> groups = new ArrayList<>();
 
