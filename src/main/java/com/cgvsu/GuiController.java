@@ -48,7 +48,7 @@ import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
 
 public class GuiController {
 
-    final private float TRANSLATION = 5F;
+    final private float TRANSLATION = 2F;
     private float x = 0;
 
     @FXML
@@ -64,6 +64,9 @@ public class GuiController {
 
     @FXML
     private ToggleGroup camerasGroup = new ToggleGroup();
+
+    @FXML
+    private ToggleGroup camerasPinGroup = new ToggleGroup();
 
     @FXML
     private MenuItem addNewCamera;
@@ -184,6 +187,7 @@ public class GuiController {
             models.add(newModel);
             x += newModel.xSize;
         } catch (IOException | RuntimeException exception) {
+            System.out.println(exception);
             throwExceptionWindow();
         }
     }
@@ -197,9 +201,17 @@ public class GuiController {
         textureShow.setSelected(false);
         CheckMenuItem lightingShow = new CheckMenuItem("Освещение");
         lightingShow.setSelected(false);
+        RadioMenuItem pinCamera = new RadioMenuItem("Центрировать камеру");
+        pinCamera.setSelected(true);
+
+        camerasPinGroup.getToggles().add(camerasGroup.getToggles().size()-1,pinCamera);
+        modelSubMenu.getItems().add(pinCamera);
+
+
         modelSubMenu.getItems().add(polygonMeshShow);
         modelSubMenu.getItems().add(textureShow);
         modelSubMenu.getItems().add(lightingShow);
+
         modelsMenu.getItems().add(modelSubMenu);
     }
 
