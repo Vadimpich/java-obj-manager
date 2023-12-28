@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Polygon;
-import com.cgvsu.objreader.ObjReader;
 import javafx.scene.canvas.GraphicsContext;
+
 import javax.vecmath.*;
+
 import com.cgvsu.model.Model;
-import javafx.scene.shape.TriangleMesh;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
@@ -20,12 +20,61 @@ public class RenderEngine {
             final Camera camera,
             final List<Model> models,
             final int width,
-            final int height)
-    {
+            final int height) {
 
 
         for (Model mesh : models) {
-            if (mesh.viewMesh) renderModel(graphicsContext,mesh,camera, width, height);
+            if (mesh.viewMesh) renderModel(graphicsContext, mesh, camera, width, height);
+        }
+    }
+
+    private static class PointVertexModel {
+
+        public PointVertexModel(Point2f point, int vertexIndex, Model model) {
+            this.point = new Point2f((float) Math.floor(point.x), (float) Math.floor(point.y));
+            this.vertexIndex = vertexIndex;
+            this.model = model;
+        }
+
+        public Point2f point;
+        public int vertexIndex;
+
+        public Model model;
+
+        public boolean nearPoint(Point2f other) {
+            final int MAX_DELTA = 5;
+            return Math.abs(this.point.x - other.x) < MAX_DELTA && Math.abs(this.point.y - other.y) < MAX_DELTA;
+        }
+    }
+
+    private static List<PointVertexModel> currentFramePoints = new ArrayList<>();
+
+
+    public static void deleteVertex(Point2f point) {
+        System.out.printf("%f %f\n", point.x, point.y);
+        for (PointVertexModel pvm : currentFramePoints) {
+            //System.out.printf("%f %f\n", pvm.point.x, pvm.point.y);
+            if (pvm.nearPoint(point)) {
+                List<Integer> newPolyVertices = new ArrayList<>();
+                System.out.printf("Found %d\n", pvm.vertexIndex);
+                //pvm.model.vertices.remove(pvm.vertexIndex);
+                int nPoligons = pvm.model.polygons.size();
+                for (int i = 0; i < nPoligons; ++i) {
+                    Polygon poly = pvm.model.polygons.get(i);
+                    if (poly.getVertexIndices().contains(pvm.vertexIndex)) {
+                        System.out.printf("Poly found %d\n", i);
+                        poly.getVertexIndices().remove((Integer) pvm.vertexIndex);
+                        newPolyVertices.addAll(poly.getVertexIndices());
+                        System.out.println(pvm.model.polygons.remove(poly));
+                        --i;
+                        --nPoligons;
+                    }
+                }
+                Polygon newPoly = new Polygon();
+                newPoly.getVertexIndices().addAll(newPolyVertices);
+                pvm.model.polygons.add(newPoly);
+                break;
+            }
         }
     }
 
@@ -34,9 +83,7 @@ public class RenderEngine {
             final Model mesh,
             Camera camera,
             final int width,
-
-            final int height)
-    {
+            final int height) {
         Matrix4f modelMatrix = rotateScaleTranslate();
         Matrix4f viewMatrix = camera.getViewMatrix();
         Matrix4f projectionMatrix = camera.getProjectionMatrix();
@@ -45,17 +92,21 @@ public class RenderEngine {
         modelViewProjectionMatrix.mul(viewMatrix);
         modelViewProjectionMatrix.mul(projectionMatrix);
 
+        currentFramePoints = new ArrayList<>();
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
 
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+                //System.out.printf("%d %d\n", polygonInd, vertexInPolygonInd);
                 Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
                 javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
 
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
+                currentFramePoints.add(new PointVertexModel(resultPoint, mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd), mesh));
+
                 resultPoints.add(resultPoint);
             }
 
@@ -82,15 +133,15 @@ public class RenderEngine {
             final List<Model> models,
             final int width,
             final int height
-    ){
-        for (Model mesh : models){
-            if (mesh.viewTexture){
-                renderModelTexture(graphicsContext,mesh);
+    ) {
+        for (Model mesh : models) {
+            if (mesh.viewTexture) {
+                renderModelTexture(graphicsContext, mesh);
             }
         }
     }
 
-    public void renderModelTexture(GraphicsContext graphicsContext,Model mesh) {
+    public void renderModelTexture(GraphicsContext graphicsContext, Model mesh) {
     }
 
 }
