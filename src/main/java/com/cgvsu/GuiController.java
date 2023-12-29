@@ -15,6 +15,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -24,6 +25,7 @@ import javax.vecmath.Point2f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,14 +42,22 @@ public class GuiController {
     @FXML
     AnchorPane anchorPane;
 
-    @FXML
-    private Menu modelsMenu;
 
     @FXML
-    private Menu camerasMenu;
+    private VBox modelsMenuBox;
+
 
     @FXML
-    private MenuItem deleteCameraButton;
+    private VBox camerasMenuBox;
+
+    @FXML
+    private VBox settingsMenuBox;
+
+    @FXML
+    private Spinner fpsSpinner;
+
+    @FXML
+    private Button deleteCameraButton;
 
     @FXML
     private Canvas canvas;
@@ -92,6 +102,8 @@ public class GuiController {
 
     private double maxFPS = 60;
 
+    private KeyFrame frame = new KeyFrame(Duration.millis(1000 / maxFPS), event -> frameEvent());
+
     @FXML
     private void initialize() {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
@@ -102,27 +114,22 @@ public class GuiController {
 
         addCamera();
 
-        AtomicReference<Vector3f> prevPos = new AtomicReference<>(camera.getPosition());
+        startRender();
 
-
-        KeyFrame frame = new KeyFrame(Duration.millis(1000 / maxFPS), event -> {
-            double width = canvas.getWidth();
-            double height = canvas.getHeight();
-
-            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
-            boolean flag = true;
-
-            if (camera.getPosition() != prevPos.get() || flag) {
-                renderModels(width, height);
-
+        fpsSpinner.getEditor().setText("60");
+        fpsSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            int fps = Integer.parseInt(newValue);
+            if (fps >= 1 && fps <= 120) {
+                maxFPS = fps;
+            } else if (fps < 1) {
+                fpsSpinner.getEditor().setText("1");
+                maxFPS = 1;
+            } else {
+                fpsSpinner.getEditor().setText("120");
+                maxFPS = 120;
             }
-            prevPos.set(camera.getPosition());
+            startRender();
         });
-
-
-        timeline.getKeyFrames().add(frame);
-        timeline.play();
 
         canvas.setOnScroll(scrollEvent -> {
             float deltaY = (float) scrollEvent.getDeltaY();
@@ -167,6 +174,22 @@ public class GuiController {
         });
     }
 
+    void frameEvent() {
+        double width = canvas.getWidth();
+        double height = canvas.getHeight();
+
+        canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+        camera.setAspectRatio((float) (width / height));
+
+        renderModels(width, height);
+    }
+
+    void startRender() {
+        frame = new KeyFrame(Duration.millis(1000 / maxFPS), event -> frameEvent());
+        timeline.getKeyFrames().add(frame);
+        timeline.play();
+    }
+
     private void renderModels(double width, double height) {
         RenderEngine.render(canvas.getGraphicsContext2D(), camera, models, (int) width, (int) height);
     }
@@ -180,7 +203,7 @@ public class GuiController {
     }
 
     @FXML
-    private void onOpenModelMenuItemClick() {
+    private void onOpenModelMenuItemClick() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Load Model");
@@ -205,14 +228,17 @@ public class GuiController {
             modelCenters.add(x);
             x += newModel.xSize;
         } catch (Exception exception) {
-            System.out.println(exception);
             throwExceptionWindow();
+            throw exception;
         }
     }
 
     @FXML
     private void addToModelsList(Path fileName) {
-        Menu modelSubMenu = new Menu(fileName.toString());
+        String name = fileName.toString();
+        MenuButton modelButton = new MenuButton(name.split("\\\\")[name.split("\\\\").length - 1]);
+        modelButton.setMinWidth(240);
+        modelButton.setMaxWidth(240);
         CheckMenuItem polygonMeshShow = new CheckMenuItem("Полигональная сетка");
         polygonMeshShow.setSelected(true);
         CheckMenuItem textureShow = new CheckMenuItem("Текстура");
@@ -224,15 +250,14 @@ public class GuiController {
         int modelIndex = models.size();
         pinCamera.setOnAction(actionEvent -> setCameraTarget(modelIndex));
 
-        camerasPinGroup.getToggles().add(camerasGroup.getToggles().size() - 1, pinCamera);
-        modelSubMenu.getItems().add(pinCamera);
+        camerasPinGroup.getToggles().add(camerasPinGroup.getToggles().size(), pinCamera);
+        modelButton.getItems().add(pinCamera);
 
+        modelButton.getItems().add(polygonMeshShow);
+        modelButton.getItems().add(textureShow);
+        modelButton.getItems().add(lightingShow);
 
-        modelSubMenu.getItems().add(polygonMeshShow);
-        modelSubMenu.getItems().add(textureShow);
-        modelSubMenu.getItems().add(lightingShow);
-
-        modelsMenu.getItems().add(modelSubMenu);
+        modelsMenuBox.getChildren().add(modelButton);
     }
 
     @FXML
@@ -244,7 +269,7 @@ public class GuiController {
 
     @FXML
     private void clearModelsList() {
-        modelsMenu.getItems().clear();
+        modelsMenuBox.getChildren().clear();
         camerasPinGroup.getToggles().clear();
     }
 
@@ -271,24 +296,25 @@ public class GuiController {
                 new Vector3f(0, 0, 0),
                 1.0F, 1, 0.01F, 100
         ));
-        if (cameras.size() > 1) {
-            deleteCameraButton.setDisable(false);
-        }
-        RadioMenuItem newCameraButton = new RadioMenuItem(String.format("Camera %d", currentCameraNum++));
+
+        deleteCameraButton.setDisable(cameras.size() <= 1);
+        RadioButton newCameraButton = new RadioButton(String.format("Camera %d", currentCameraNum++));
+        newCameraButton.setMinHeight(25);
         newCameraButton.setSelected(true);
         final int cameraIndex = cameras.size() - 1;
         newCameraButton.setOnAction(event -> chooseCamera(cameraIndex));
         camerasGroup.getToggles().add(cameraIndex, newCameraButton);
-        camerasMenu.getItems().add(newCameraButton);
+        camerasMenuBox.getChildren().add(newCameraButton);
         chooseCamera(cameras.size() - 1);
     }
 
     @FXML
     private void deleteCamera() {
         int cameraIndex = cameras.indexOf(camera);
-        camerasMenu.getItems().remove(cameraIndex + 2);
+        camerasMenuBox.getChildren().remove(cameraIndex + 3);
         cameras.remove(cameraIndex);
-        camera = cameras.get(0);
+        camerasGroup.getToggles().remove(cameraIndex);
+        chooseCamera(0);
         if (cameras.size() == 1) {
             deleteCameraButton.setDisable(true);
         }
@@ -297,8 +323,12 @@ public class GuiController {
     @FXML
     private void chooseCamera(int ind) {
         camera = cameras.get(ind);
+        if (!camerasGroup.getToggles().isEmpty()) {
+            camerasGroup.selectToggle(camerasGroup.getToggles().get(ind));
+        }
         if (!camerasPinGroup.getToggles().isEmpty()) {
             camerasPinGroup.selectToggle(camerasPinGroup.getToggles().get(camera.getCenteredModel()));
+            System.out.println(camera.getCenteredModel());
         }
     }
 
