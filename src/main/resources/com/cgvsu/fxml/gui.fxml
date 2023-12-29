@@ -12,7 +12,10 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="anchorPane" minHeight="900.0" minWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
@@ -62,12 +65,23 @@
                   <children>
                      <VBox fx:id="settingsMenuBox" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <children>
-                           <HBox prefHeight="25.0" prefWidth="240.0">
+                           <GridPane>
+                             <columnConstraints>
+                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                             </columnConstraints>
+                             <rowConstraints>
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                             </rowConstraints>
                               <children>
                                  <Label minHeight="25.0" minWidth="100.0" text="Max FPS" />
-                                 <Spinner fx:id="fpsSpinner" editable="true" />
+                                 <Spinner fx:id="fpsSpinner" editable="true" GridPane.columnIndex="1" />
+                                 <Button fx:id="applyFpsButton" alignment="TOP_LEFT" disable="true" mnemonicParsing="false" onAction="#applyFPS" text="Apply" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               </children>
-                           </HBox>
+                           </GridPane>
+                           <HBox prefHeight="25.0" prefWidth="240.0" />
                         </children>
                      </VBox>
                   </children></AnchorPane>
@@ -76,4 +90,5 @@
      </tabs>
    </TabPane>
    <Button fx:id="showSettingsButton" mnemonicParsing="false" onAction="#toggleSettings" prefHeight="900.0" prefWidth="30.0" style="-fx-shape: &quot;M 0 0 L 0 -1 M 0 -1 L 1 -1 L 1 0 L 0 0&quot;; -fx-background-color: white; -fx-border-style: solid; -fx-border-color: lightgray;" text="&gt;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="0.0" />
+   <Label fx:id="fpsLabel" layoutX="14.0" layoutY="861.0" prefHeight="25.0" prefWidth="175.0" text="FPS: 60" />
 </AnchorPane>

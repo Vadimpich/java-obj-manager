@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
@@ -58,6 +59,12 @@ public class GuiController {
 
     @FXML
     private Button deleteCameraButton;
+
+    @FXML
+    private Button applyFpsButton;
+
+    @FXML
+    private Label fpsLabel;
 
     @FXML
     private Canvas canvas;
@@ -109,26 +116,33 @@ public class GuiController {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        timeline = new Timeline();
-        timeline.setCycleCount(Animation.INDEFINITE);
-
         addCamera();
 
         startRender();
 
         fpsSpinner.getEditor().setText("60");
         fpsSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            int fps = Integer.parseInt(newValue);
-            if (fps >= 1 && fps <= 120) {
-                maxFPS = fps;
-            } else if (fps < 1) {
-                fpsSpinner.getEditor().setText("1");
-                maxFPS = 1;
-            } else {
-                fpsSpinner.getEditor().setText("120");
-                maxFPS = 120;
+            int fps = 60;
+            try {
+                fps = Integer.parseInt(newValue);
+            } catch (NumberFormatException e) {
+                if (!Objects.equals(newValue, "")) {
+                    fpsSpinner.getEditor().setText(oldValue);
+                } else {
+                    applyFpsButton.setDisable(true);
+                }
+                return;
             }
-            startRender();
+
+            if (fps < 1) {
+                fpsSpinner.getEditor().setText("1");
+                fps = 1;
+            } else if (fps > 120) {
+                fpsSpinner.getEditor().setText("120");
+                fps = 120;
+            }
+
+            applyFpsButton.setDisable(fps == maxFPS);
         });
 
         canvas.setOnScroll(scrollEvent -> {
@@ -185,9 +199,19 @@ public class GuiController {
     }
 
     void startRender() {
+        timeline = new Timeline();
+        timeline.setCycleCount(Animation.INDEFINITE);
         frame = new KeyFrame(Duration.millis(1000 / maxFPS), event -> frameEvent());
         timeline.getKeyFrames().add(frame);
         timeline.play();
+    }
+
+    @FXML
+    void applyFPS() {
+        timeline.stop();
+        maxFPS = Integer.parseInt(fpsSpinner.getEditor().getText());
+        fpsLabel.setText(String.format("FPS: %d", (int)maxFPS));
+        startRender();
     }
 
     private void renderModels(double width, double height) {
