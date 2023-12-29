@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javax.vecmath.*;
 
 import com.cgvsu.model.Model;
+import javafx.scene.paint.Color;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
@@ -109,6 +110,8 @@ public class RenderEngine {
 
                 resultPoints.add(resultPoint);
             }
+
+            graphicsContext.setStroke((mesh.selected) ? Color.BLACK : Color.GRAY);
 
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 graphicsContext.strokeLine(

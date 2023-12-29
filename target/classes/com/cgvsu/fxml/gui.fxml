@@ -90,5 +90,5 @@
      </tabs>
    </TabPane>
    <Button fx:id="showSettingsButton" mnemonicParsing="false" onAction="#toggleSettings" prefHeight="900.0" prefWidth="30.0" style="-fx-shape: &quot;M 0 0 L 0 -1 M 0 -1 L 1 -1 L 1 0 L 0 0&quot;; -fx-background-color: white; -fx-border-style: solid; -fx-border-color: lightgray;" text="&gt;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="0.0" />
-   <Label fx:id="fpsLabel" layoutX="63.0" prefHeight="25.0" prefWidth="175.0" text="FPS: 60" />
+   <Label fx:id="fpsLabel" layoutX="14.0" layoutY="861.0" prefHeight="25.0" prefWidth="175.0" text="FPS: 60" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
 </AnchorPane>

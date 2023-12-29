@@ -248,6 +248,7 @@ public class GuiController {
                 throwExceptionWindow();
             }
             translateModel(newModel, x, 0, 0);
+            newModel.selected = models.isEmpty();
             models.add(newModel);
             modelCenters.add(x);
             x += newModel.xSize;
@@ -272,6 +273,7 @@ public class GuiController {
         RadioMenuItem pinCamera = new RadioMenuItem("Центрировать камеру");
         pinCamera.setSelected(models.isEmpty());
         int modelIndex = models.size();
+
         pinCamera.setOnAction(actionEvent -> setCameraTarget(modelIndex));
 
         camerasPinGroup.getToggles().add(camerasPinGroup.getToggles().size(), pinCamera);
@@ -287,6 +289,9 @@ public class GuiController {
     @FXML
     private void setCameraTarget(int ind) {
         selectedModel = models.get(ind);
+        for (Model model : models) {
+            model.selected = (model == selectedModel);
+        }
         camera.setCenteredModel(ind);
         camera.setTarget(new Vector3f(modelCenters.get(ind), 0, 0));
     }

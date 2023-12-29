@@ -15,6 +15,8 @@ public class Model {
     public List<Polygon> polygons = new ArrayList<>();
     public float xSize = 0;
 
+    public boolean selected = false;
+
     public boolean viewMesh = true;
     public boolean viewTexture = false;
 
