@@ -51,7 +51,7 @@ public class RenderEngine {
     private static List<PointVertexModel> currentFramePoints = new ArrayList<>();
 
 
-    public static void deleteVertex(Point2f point) {
+    /*public static void deleteVertex(Point2f point) {
         System.out.printf("%f %f\n", point.x, point.y);
         for (PointVertexModel pvm : currentFramePoints) {
             if (pvm.nearPoint(point)) {
@@ -74,7 +74,46 @@ public class RenderEngine {
                 break;
             }
         }
+    }*/
+    public static int findVertexIndexUnderMouse(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
+
+        for (Model mesh : models) {
+            if (mesh.viewMesh) {
+                Matrix4f modelMatrix = rotateScaleTranslate();
+                Matrix4f viewMatrix = camera.getViewMatrix();
+                Matrix4f projectionMatrix = camera.getProjectionMatrix();
+
+                Matrix4f modelViewProjectionMatrix = new Matrix4f(modelMatrix);
+                modelViewProjectionMatrix.mul(viewMatrix);
+                modelViewProjectionMatrix.mul(projectionMatrix);
+
+                final int nPolygons = mesh.polygons.size();
+                for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
+                    final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+
+                    for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+                        Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+
+                        javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
+
+                        Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
+
+                        if (pointIsNearMouse(resultPoint, mousePoint)) {
+                            return mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd);
+                        }
+                    }
+                }
+            }
+        }
+
+        return -1;
     }
+
+    private static boolean pointIsNearMouse(Point2f point, Point2f mousePoint) {
+        final int MAX_DELTA = 5;
+        return Math.abs(point.x - mousePoint.x) < MAX_DELTA && Math.abs(point.y - mousePoint.y) < MAX_DELTA;
+    }
+
 
     private static void renderModel(
             final GraphicsContext graphicsContext,

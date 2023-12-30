@@ -7,13 +7,28 @@ import java.awt.event.*;
 public class ExceptionDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
+    private JLabel textMessage;
+    public Operation operation;
+    public enum Operation{
+        READING,
+        WRITING;
+    }
 
-    public ExceptionDialog() {
+    public ExceptionDialog(Operation operation) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         contentPane.setPreferredSize(new Dimension(800, 200));
-
+        if (operation.equals(Operation.READING)){
+            textMessage.setText("<html>Ошибка импорта модели. \n" +
+                    "Убедитесь, что файл имеет \n" +
+                    "расширение .obj или выберите другую модель</html>");
+        }
+        else if (operation.equals(Operation.WRITING)){
+            textMessage.setText("<html>Ошибка экспорта модели. \n" +
+                    "Убедитесь, что файл имеет \n" +
+                    "расширение .obj или выберите другую модель</html>");
+        }
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -49,11 +64,12 @@ public class ExceptionDialog extends JDialog {
     }
 
 
-    public static void throwExceptionWindow(){
-        ExceptionDialog dialog = new ExceptionDialog();
+    public static void throwExceptionWindow(Operation operation){
+        ExceptionDialog dialog = new ExceptionDialog(operation);
         dialog.pack();
         dialog.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - dialog.getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialog.getHeight()/2);
         dialog.setVisible(true);
     }
+
 
 }
