@@ -1,14 +1,9 @@
 package com.cgvsu.math;
 
-import java.util.Objects;
+public class Vector2f extends VectorNf {
 
-public class Vector2f {
-    public float x, y;
-
-    public Vector2f(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
+    final private  float x;
+    final private float y;
 
     public float getX() {
         return x;
@@ -18,55 +13,43 @@ public class Vector2f {
         return y;
     }
 
-    public Vector2f plus(Vector2f other) {
-        return new Vector2f(this.x + other.x, this.y + other.y);
+    public Vector2f(float x, float y) {
+        super(x, y);
+        this.x = x;
+        this.y = y;
+    }
+    public static Vector2f addition(Vector2f a, Vector2f b){
+        return new Vector2f(a.getX() + b.getX(), a.getY() + b.getY());
     }
 
-    public Vector2f minus(Vector2f other) {
-        return new Vector2f(this.x - other.x, this.y - other.y);
+    public static Vector2f subtraction(Vector2f a, Vector2f b){
+        return new Vector2f(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    public Vector2f multiply(float scalar) {
-        return new Vector2f(this.x * scalar, this.y * scalar);
+    @Override
+    public float[] getArrValues() {
+        return new float[]{x, y};
     }
-
-    public Vector2f divide(float scalar) {
-        if (scalar == 0) {
-            throw new IllegalArgumentException("Мы не делим на 0");
-        }
-        return new Vector2f(this.x / scalar, this.y / scalar);
+    public static Vector2f scale(float a, Vector2f vector) {
+        return  new Vector2f(vector.getX() * a, vector.getY() * a);
     }
-
+    @Override
     public float length() {
-        return (float) Math.sqrt(x * x + y * y);
+        return this.length;
     }
 
+    @Override
     public Vector2f normalize() {
-        float length = length();
-        if (length == 0) {
-            throw new ArithmeticException("Ты точно хочешь нормализовать 0-вектор?");
-        }
-        return this.divide(length);
+        return new Vector2f(this.x / length, this.y / length);
     }
-
-    public float dotProduct(Vector2f other) {
-        return this.x * other.x + this.y * other.y;
+    public static float scalarProduct(Vector2f vector1, Vector2f vector2){
+        return vector1.length * vector2.length * vector1.cosAngleBetweenVectors( vector2);
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vector2f vector2f = (Vector2f) o;
-        return Float.compare(x, vector2f.x) == 0 && Float.compare(y, vector2f.y) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
-    public String coordsToStringSplitBySpace() {
-        return String.format("%f %f", x, y);
+        Vector2f vector = (Vector2f) o;
+        return Float.compare(vector.x, x) == 0 && Float.compare(vector.y, y) == 0;
     }
 }

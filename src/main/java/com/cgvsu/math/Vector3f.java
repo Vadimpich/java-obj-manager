@@ -1,13 +1,29 @@
 package com.cgvsu.math;
 
-import java.util.Objects;
 
-public class Vector3f {
-    public float x, y, z;
+public class Vector3f extends VectorNf {
+
+    private float x;
+    private float y;
+    private float z;
+
 
     public Vector3f(float x, float y, float z) {
+        super(x, y, z);
         this.x = x;
         this.y = y;
+        this.z = z;
+    }
+
+    public void setX(float x){
+        this.x = x;
+    }
+
+    public void setY(float y){
+        this.y = y;
+    }
+
+    public void setZ(float z){
         this.z = z;
     }
 
@@ -23,62 +39,43 @@ public class Vector3f {
         return z;
     }
 
-    public Vector3f plus(Vector3f other) {
-        return new Vector3f(this.x + other.x, this.y + other.y, this.z + other.z);
+    public static Vector3f addition(Vector3f vector1, Vector3f vector2) {
+        return new Vector3f(
+                vector1.x + vector2.x,
+                vector1.y + vector2.y,
+                vector1.z + vector2.z
+        );
     }
-
-    public Vector3f minus(Vector3f other) {
-        return new Vector3f(this.x - other.x, this.y - other.y, this.z - other.z);
+    public static Vector3f subtraction(Vector3f vector1, Vector3f vector2) {
+        return new Vector3f(
+                vector1.x - vector2.x,
+                vector1.y - vector2.y,
+                vector1.z - vector2.z
+        );
     }
-
-    public Vector3f multiply(float scalar) {
-        return new Vector3f(this.x * scalar, this.y * scalar, this.z * scalar);
-    }
-
-    public Vector3f divide(float scalar) {
-        if (scalar == 0) {
-            throw new IllegalArgumentException("Мы не делим на 0");
-        }
-        return new Vector3f(this.x / scalar, this.y / scalar, this.z / scalar);
-    }
-
+    @Override
     public float length() {
-        return (float) Math.sqrt(x * x + y * y + z * z);
+        return length;
     }
 
+    @Override
     public Vector3f normalize() {
-        float length = length();
-        if (length == 0) {
-            throw new ArithmeticException("Ты точно хочешь нормализовать 0-вектор?");
-        }
-        return this.divide(length);
+        return new Vector3f(this.x / length, this.y / length, this.z / length);
     }
-
-    public float dotProduct(Vector3f other) {
-        return this.x * other.x + this.y * other.y + this.z * other.z;
-    }
-
-    public Vector3f crossProduct(Vector3f other) {
-        float resultX = this.y * other.z - this.z * other.y;
-        float resultY = this.z * other.x - this.x * other.z;
-        float resultZ = this.x * other.y - this.y * other.x;
-        return new Vector3f(resultX, resultY, resultZ);
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vector3f vector3f = (Vector3f) o;
-        return Float.compare(x, vector3f.x) == 0 && Float.compare(y, vector3f.y) == 0 && Float.compare(z, vector3f.z) == 0;
+    public float[] getArrValues() {
+        return new float[]{x, y, z};
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
+    public Vector3f vectorProduct(Vector3f vector) {
+        float i = y * vector.getZ() - z * vector.getY();
+        float j = x * vector.getZ() - z * vector.getX();
+        float k = x * vector.getY() - y * vector.getX();
+        return new Vector3f(i, -j, k);
     }
 
-    public String coordsToStringSplitBySpace() {
-        return String.format("%f %f %f", x, y, z);
+    public javax.vecmath.Vector3f toJavax(){
+        return new javax.vecmath.Vector3f(x,y,z);
     }
+
 }

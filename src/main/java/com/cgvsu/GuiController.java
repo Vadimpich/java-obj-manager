@@ -345,9 +345,9 @@ public class GuiController {
 
     private void translateModel(Model model, float x, float y, float z) {
         for (com.cgvsu.math.Vector3f vertex : model.getVertices()) {
-            vertex.x += x;
-            vertex.y += y;
-            vertex.z += z;
+            vertex.setX(vertex.getX() + x);
+            vertex.setY(vertex.getY() + y);
+            vertex.setZ(vertex.getZ() + z);
         }
     }
 

@@ -1,8 +1,12 @@
 package com.cgvsu.render_engine;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cgvsu.math.Matrix4F;
 import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Polygon;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,6 +14,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javax.vecmath.*;
 
 import com.cgvsu.model.Model;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.paint.Color;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
@@ -92,7 +100,7 @@ public class RenderEngine {
                     for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                         Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
-                        javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
+                        javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.getX(), vertex.getY(), vertex.getZ());
 
                         Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
 
@@ -121,52 +129,52 @@ public class RenderEngine {
             Camera camera,
             final int width,
             final int height) {
-        Matrix4f modelMatrix = rotateScaleTranslate();
-        Matrix4f viewMatrix = camera.getViewMatrix();
-        Matrix4f projectionMatrix = camera.getProjectionMatrix();
+        Matrix4F modelMatrix = rotateScaleTranslate();
+        Matrix4F viewMatrix = camera.getViewMatrix();
+        Matrix4F projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4f modelViewProjectionMatrix = new Matrix4f(modelMatrix);
+        Matrix4F modelViewProjectionMatrix = new Matrix4f(modelMatrix);
         modelViewProjectionMatrix.mul(viewMatrix);
         modelViewProjectionMatrix.mul(projectionMatrix);
 
         currentFramePoints = new ArrayList<>();
         final int nPolygons = mesh.polygons.size();
+        Image image = new Image("qwe.png");
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
-            final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+            mesh.polygons.get(polygonInd).drawPolygon(graphicsContext,
+                    modelViewProjectionMatrix,
+                    mesh,
+                    width,
+                    height,
+                    Color.RED,
+                    true,
+                    new ZBuffer(width, height),
+                    false,
+                    image.getPixelReader()
+            );
 
-            ArrayList<Point2f> resultPoints = new ArrayList<>();
-            for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
-                javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
-
-                Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
-                currentFramePoints.add(new PointVertexModel(resultPoint, mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd), mesh));
-
-                resultPoints.add(resultPoint);
-            }
-
-            graphicsContext.setStroke((mesh.selected) ? Color.BLACK : Color.GRAY);
-
-            for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                graphicsContext.setStroke(
-                        (mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd) == selectedVertex
-                                || mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd - 1) == selectedVertex
-                        ) ? Color.RED : graphicsContext.getStroke()
-                );
-                graphicsContext.strokeLine(
-                        resultPoints.get(vertexInPolygonInd - 1).x,
-                        resultPoints.get(vertexInPolygonInd - 1).y,
-                        resultPoints.get(vertexInPolygonInd).x,
-                        resultPoints.get(vertexInPolygonInd).y);
-            }
-
-            if (nVerticesInPolygon > 0)
-                graphicsContext.strokeLine(
-                        resultPoints.get(nVerticesInPolygon - 1).x,
-                        resultPoints.get(nVerticesInPolygon - 1).y,
-                        resultPoints.get(0).x,
-                        resultPoints.get(0).y);
+//            graphicsContext.setStroke((mesh.selected) ? Color.BLACK : Color.GRAY);
+//
+//            for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+//                graphicsContext.setStroke(
+//                        (mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd) == selectedVertex
+//                                || mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd - 1) == selectedVertex
+//                        ) ? Color.RED : graphicsContext.getStroke()
+//                );
+//                graphicsContext.strokeLine(
+//                        resultPoints.get(vertexInPolygonInd - 1).x,
+//                        resultPoints.get(vertexInPolygonInd - 1).y,
+//                        resultPoints.get(vertexInPolygonInd).x,
+//                        resultPoints.get(vertexInPolygonInd).y);
+//            }
+//
+//            if (nVerticesInPolygon > 0)
+//                graphicsContext.strokeLine(
+//                        resultPoints.get(nVerticesInPolygon - 1).x,
+//                        resultPoints.get(nVerticesInPolygon - 1).y,
+//                        resultPoints.get(0).x,
+//                        resultPoints.get(0).y);
         }
     }
 

@@ -82,8 +82,8 @@ public class ObjReader {
 				case OBJ_VERTEX_TOKEN ->{
 					Vector3f parsedVector3f = parseVector3f(wordsInLineWithoutToken);
 					model.addVertex(parsedVector3f);
-					xMax = Math.max(parsedVector3f.x,xMax);
-					xMin = Math.min(parsedVector3f.x,xMin);
+					xMax = Math.max(parsedVector3f.getX(),xMax);
+					xMin = Math.min(parsedVector3f.getX(),xMin);
 					model.xSize = Math.max(model.xSize,Math.abs(xMin - xMax));
 				}
 				case OBJ_TEXTURE_TOKEN -> model.addTextureVertex(parseVector2f(wordsInLineWithoutToken));

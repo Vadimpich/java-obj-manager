@@ -1,13 +1,17 @@
 package com.cgvsu.math;
 
-public class Vector4f {
-    public float x, y, z, w;
 
-    public Vector4f(float x, float y, float z, float w) {
+public class Vector4f extends VectorNf {
+    final private float x;
+    final private float y;
+    final private float z;
+    final private float k;
+    public Vector4f(float x, float y, float z, float k){
+        super(x, y, z, k);
         this.x = x;
         this.y = y;
         this.z = z;
-        this.w = w;
+        this.k = k;
     }
 
     public float getX() {
@@ -22,42 +26,48 @@ public class Vector4f {
         return z;
     }
 
-    public float getW() {
-        return w;
+    public float getK() {
+        return k;
     }
 
-    public Vector4f plus(Vector4f other) {
-        return new Vector4f(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w);
+    public static Vector4f subtraction(Vector4f vector1, Vector4f vector2){
+        return new Vector4f(
+                vector1.x - vector2.x,
+                vector1.y - vector2.y,
+                vector1.z - vector2.z,
+                vector1.k - vector2.k
+        );
+    }
+    public static Vector4f addition(Vector4f vector1, Vector4f vector2){
+        return new Vector4f(
+                vector1.x + vector2.x,
+                vector1.y + vector2.y,
+                vector1.z + vector2.z,
+                vector1.k + vector2.k
+        );
+    }
+    @Override
+    public Vector4f multiply(float a) {
+        return new Vector4f(
+                this.x * a,
+                this.y * a,
+                this.z * a,
+                this.k * a
+        );
     }
 
-    public Vector4f minus(Vector4f other) {
-        return new Vector4f(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w);
-    }
-
-    public Vector4f multiply(float scalar) {
-        return new Vector4f(this.x * scalar, this.y * scalar, this.z * scalar, this.w * scalar);
-    }
-
-    public Vector4f divide(float scalar) {
-        if (scalar == 0) {
-            throw new IllegalArgumentException("Мы не делим на 0");
-        }
-        return new Vector4f(this.x / scalar, this.y / scalar, this.z / scalar, this.w / scalar);
-    }
-
+    @Override
     public float length() {
-        return (float) Math.sqrt(x * x + y * y + z * z + w * w);
+        return length;
     }
 
+    @Override
     public Vector4f normalize() {
-        float length = length();
-        if (length == 0) {
-            throw new ArithmeticException("Ты точно хочешь нормализовать 0-вектор?");
-        }
-        return this.divide(length);
+        return new Vector4f(this.x / length, this.y / length, this.z / length, this.k / length);
+    }
+    @Override
+    public float[] getArrValues() {
+        return new float[]{x, y, z, k};
     }
 
-    public float dotProduct(Vector4f other) {
-        return this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w;
-    }
 }
