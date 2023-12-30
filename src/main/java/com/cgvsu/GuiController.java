@@ -182,7 +182,7 @@ public class GuiController {
                 angleY = Math.min((float) Math.PI / 4, Math.max(-(float) Math.PI / 4, angleY + dy / 100));
                 rotateXZ();
             } else if (event.getButton() == MouseButton.SECONDARY) {
-                translateModel(selectedModel, dx / 10, dy / 10, 0);
+                translateModel(selectedModel, -dx / 25, -dy / 20, 0);
             }
             last = new Vector2f((float) event.getX(), (float) event.getY());
         });
