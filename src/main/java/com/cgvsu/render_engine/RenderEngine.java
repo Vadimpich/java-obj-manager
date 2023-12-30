@@ -50,13 +50,13 @@ public class RenderEngine {
 
     private static List<PointVertexModel> currentFramePoints = new ArrayList<>();
 
+    private static int selectedVertex;
 
     public static void deleteVertex(Point2f point) {
-        System.out.printf("%f %f\n", point.x, point.y);
+        //System.out.printf("%f %f\n", point.x, point.y);
         for (PointVertexModel pvm : currentFramePoints) {
             if (pvm.nearPoint(point)) {
                 List<Integer> newPolyVertices = new ArrayList<>();
-                //pvm.model.vertices.remove(pvm.vertexIndex);
                 int nPoligons = pvm.model.polygons.size();
                 for (int i = 0; i < nPoligons; ++i) {
                     Polygon poly = pvm.model.polygons.get(i);
@@ -70,7 +70,7 @@ public class RenderEngine {
                 }
                 Polygon newPoly = new Polygon();
                 newPoly.getVertexIndices().addAll(newPolyVertices);
-                pvm.model.polygons.add(newPoly);
+                //pvm.model.polygons.add(newPoly);
                 break;
             }
         }
