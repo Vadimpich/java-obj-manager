@@ -111,6 +111,7 @@ public class RenderEngine {
                         Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
 
                         if (pointIsNearMouse(resultPoint, mousePoint)) {
+                            selectedPoly = new PolyModel();
                             selectedPVM = new PointVertexModel(resultPoint, mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd), mesh);
                             vertexFound = true;
                         }
@@ -127,6 +128,7 @@ public class RenderEngine {
                             polyPoints.add(resultPoint);
                         }
                         if (isPointInside(mousePoint, polyPoints)) {
+                            selectedPVM = new PointVertexModel(-2);
                             selectedPoly = new PolyModel(polygonInd, mesh);
                             return;
                         }
@@ -137,7 +139,7 @@ public class RenderEngine {
         }
     }
 
-    public static void deselectVertex() {
+    public static void deselect() {
         selectedPVM = new PointVertexModel(-2);
         selectedPoly = new PolyModel();
     }

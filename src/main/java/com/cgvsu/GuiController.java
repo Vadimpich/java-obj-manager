@@ -157,7 +157,7 @@ public class GuiController {
             if (keyEvent.getCode() == KeyCode.DELETE) RenderEngine.performDelete();
         });
 
-        canvas.setOnMouseClicked(mouseEvent -> {
+        canvas.setOnMousePressed(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 leftFlag = true;
                 RenderEngine.findVertexIndexFromClick(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()), camera, models, (int) canvas.getWidth(), (int) canvas.getHeight());
@@ -187,7 +187,7 @@ public class GuiController {
             }
             float dx = (float) event.getX() - last.x;
             float dy = (float) event.getY() - last.y;
-            RenderEngine.deselectVertex();
+            RenderEngine.deselect();
             if (event.getButton() == MouseButton.PRIMARY) {
                 angle += dx / 100 * TRANSLATION;
                 angleY = Math.min((float) Math.PI / 4, Math.max(-(float) Math.PI / 4, angleY + dy / 100));
