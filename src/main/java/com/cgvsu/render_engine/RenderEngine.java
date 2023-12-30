@@ -77,7 +77,7 @@ public class RenderEngine {
     public static int findVertexIndexFromClick(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
 
         for (Model mesh : models) {
-            if (mesh.viewMesh) {
+            if (mesh.selected) {
                 Matrix4f modelMatrix = rotateScaleTranslate();
                 Matrix4f viewMatrix = camera.getViewMatrix();
                 Matrix4f projectionMatrix = camera.getProjectionMatrix();
