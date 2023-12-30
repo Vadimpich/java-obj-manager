@@ -93,6 +93,10 @@ public class GuiController {
 
     private int currentCameraNum = 1;
 
+    private int firstCameraIndex = 0;
+
+    private int deletedCameras = 0;
+
     private float angle = 0;
 
     private float angleY = 0;
@@ -242,7 +246,7 @@ public class GuiController {
         settingsTab.setVisible(!settingsTab.isVisible());
         String arrow = (settingsTab.isVisible()) ? ">" : "<";
         showSettingsButton.setText(arrow);
-        showSettingsButton.setTranslateX(240-showSettingsButton.getTranslateX());
+        showSettingsButton.setTranslateX(240 - showSettingsButton.getTranslateX());
     }
 
     @FXML
@@ -372,18 +376,39 @@ public class GuiController {
         newCameraButton.setOnAction(event -> chooseCamera(cameraIndex));
         camerasGroup.getToggles().add(cameraIndex, newCameraButton);
         camerasMenuBox.getChildren().add(newCameraButton);
-        chooseCamera(cameras.size() - 1);
+        chooseCamera(cameraIndex);
     }
 
     @FXML
     private void deleteCamera() {
         int cameraIndex = cameras.indexOf(camera);
-        camerasMenuBox.getChildren().remove(cameraIndex + 3);
-        cameras.remove(cameraIndex);
-        camerasGroup.getToggles().remove(cameraIndex);
-        chooseCamera(0);
-        if (cameras.size() == 1) {
+        camera.isVisible = false;
+        camerasMenuBox.getChildren().remove(calcCameraInBoxIndex(cameraIndex) + 3);
+        calcFirstCamera();
+        chooseCamera(firstCameraIndex);
+        if (camerasMenuBox.getChildren().size() == 4) {
             deleteCameraButton.setDisable(true);
+        }
+    }
+
+    private int calcCameraInBoxIndex(int n) {
+        int result = 0;
+        for (int i = 0; i <= n; i++) {
+            if (cameras.get(i).isVisible) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private void calcFirstCamera() {
+        firstCameraIndex = 0;
+        for (Camera cam : cameras) {
+            if (cam.isVisible) {
+                break;
+            } else {
+                firstCameraIndex++;
+            }
         }
     }
 
@@ -395,7 +420,6 @@ public class GuiController {
         }
         if (!camerasPinGroup.getToggles().isEmpty()) {
             camerasPinGroup.selectToggle(camerasPinGroup.getToggles().get(camera.getCenteredModel()));
-            System.out.println(camera.getCenteredModel());
         }
     }
 

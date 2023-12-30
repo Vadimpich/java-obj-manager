@@ -72,4 +72,6 @@ public class Camera {
     }
 
     private int centeredModel = 0;
+
+    public Boolean isVisible = true;
 }
