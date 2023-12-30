@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cgvsu.math.Vector3f;
+import com.cgvsu.model.Polygon;
 import javafx.scene.canvas.GraphicsContext;
 
 import javax.vecmath.*;
@@ -49,12 +50,11 @@ public class RenderEngine {
 
     private static List<PointVertexModel> currentFramePoints = new ArrayList<>();
 
-    private static int selectedVertex;
+    private static int selectedVertex = -2;
 
-    public static void deleteVertex(Point2f point) {
-        //System.out.printf("%f %f\n", point.x, point.y);
+    public static void deleteVertex() {
         for (PointVertexModel pvm : currentFramePoints) {
-            if (pvm.nearPoint(point)) {
+            if (pvm.vertexIndex == selectedVertex) {
                 List<Integer> newPolyVertices = new ArrayList<>();
                 int nPoligons = pvm.model.polygons.size();
                 for (int i = 0; i < nPoligons; ++i) {
@@ -69,13 +69,12 @@ public class RenderEngine {
                 }
                 Polygon newPoly = new Polygon();
                 newPoly.getVertexIndices().addAll(newPolyVertices);
-                //pvm.model.polygons.add(newPoly);
                 break;
             }
         }
-    }*/
-    public static int findVertexIndexFromClick(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
+    }
 
+    public static void findVertexIndexFromClick(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
         for (Model mesh : models) {
             if (mesh.selected) {
                 Matrix4f modelMatrix = rotateScaleTranslate();
@@ -98,14 +97,16 @@ public class RenderEngine {
                         Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
 
                         if (pointIsNearMouse(resultPoint, mousePoint)) {
-                            return mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd);
+                            selectedVertex = mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd);
                         }
                     }
                 }
             }
         }
+    }
 
-        return -1;
+    public static void deselectVertex() {
+        selectedVertex = -2;
     }
 
     private static boolean pointIsNearMouse(Point2f point, Point2f mousePoint) {
@@ -148,6 +149,11 @@ public class RenderEngine {
             graphicsContext.setStroke((mesh.selected) ? Color.BLACK : Color.GRAY);
 
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+                graphicsContext.setStroke(
+                        (mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd) == selectedVertex
+                                || mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd - 1) == selectedVertex
+                        ) ? Color.RED : graphicsContext.getStroke()
+                );
                 graphicsContext.strokeLine(
                         resultPoints.get(vertexInPolygonInd - 1).x,
                         resultPoints.get(vertexInPolygonInd - 1).y,

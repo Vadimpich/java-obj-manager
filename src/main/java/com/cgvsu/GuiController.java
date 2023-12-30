@@ -152,33 +152,23 @@ public class GuiController {
             float deltaY = (float) scrollEvent.getDeltaY();
             handleMouseWheel(deltaY / 40 * TRANSLATION);
         });
-        canvas.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY)
-                leftFlag = true;
-            if (mouseEvent.getButton() == MouseButton.SECONDARY)
-                rightFlag = true;
-            if (leftFlag){
-                int index = RenderEngine.findVertexIndexFromClick(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()), camera, models,(int) canvas.getWidth(),(int) canvas.getHeight());
-                System.out.println(index);
-            }
 
-
-        });
         canvas.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode().equals(KeyCode.DELETE)) {
-                //Вадим делай делай давай давай
-            }
+            if (keyEvent.getCode() == KeyCode.DELETE) RenderEngine.deleteVertex();
         });
 
-
-        /*canvas.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY)
+        canvas.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 leftFlag = true;
+                RenderEngine.findVertexIndexFromClick(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()), camera, models, (int) canvas.getWidth(), (int) canvas.getHeight());
+                canvas.requestFocus();
+            }
             if (mouseEvent.getButton() == MouseButton.SECONDARY)
                 rightFlag = true;
-            if (mouseEvent.getButton() == MouseButton.MIDDLE)
-                RenderEngine.deleteVertex(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()));
-        });*/
+            if (mouseEvent.getButton() == MouseButton.MIDDLE) {
+                middleFlag = true;
+            }
+        });
 
         canvas.setOnMouseReleased(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY)
@@ -197,6 +187,7 @@ public class GuiController {
             }
             float dx = (float) event.getX() - last.x;
             float dy = (float) event.getY() - last.y;
+            RenderEngine.deselectVertex();
             if (event.getButton() == MouseButton.PRIMARY) {
                 angle += dx / 100 * TRANSLATION;
                 angleY = Math.min((float) Math.PI / 4, Math.max(-(float) Math.PI / 4, angleY + dy / 100));
