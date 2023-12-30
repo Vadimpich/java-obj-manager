@@ -5,25 +5,19 @@ import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objreader.ObjWriter;
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
-import com.sun.glass.ui.Screen;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -38,7 +32,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.cgvsu.ExceptionDialog.throwExceptionWindow;
 
@@ -161,7 +154,7 @@ public class GuiController {
             if (mouseEvent.getButton() == MouseButton.SECONDARY)
                 rightFlag = true;
             if (leftFlag){
-                int index = RenderEngine.findVertexIndexUnderMouse(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()), camera, models,(int) canvas.getWidth(),(int) canvas.getHeight());
+                int index = RenderEngine.findVertexIndexFromClick(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()), camera, models,(int) canvas.getWidth(),(int) canvas.getHeight());
                 System.out.println(index);
             }
 

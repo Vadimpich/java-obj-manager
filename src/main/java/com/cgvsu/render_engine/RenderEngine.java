@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cgvsu.math.Vector3f;
-import com.cgvsu.model.Polygon;
 import javafx.scene.canvas.GraphicsContext;
 
 import javax.vecmath.*;
@@ -75,7 +74,7 @@ public class RenderEngine {
             }
         }
     }*/
-    public static int findVertexIndexUnderMouse(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
+    public static int findVertexIndexFromClick(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
 
         for (Model mesh : models) {
             if (mesh.viewMesh) {
