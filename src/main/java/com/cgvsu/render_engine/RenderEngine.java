@@ -37,46 +37,60 @@ public class RenderEngine {
             this.model = model;
         }
 
+        public PointVertexModel(int vertexIndex) {
+            this.point = new Point2f(0, 0);
+            this.vertexIndex = vertexIndex;
+            this.model = new Model();
+        }
+
         public Point2f point;
         public int vertexIndex;
 
         public Model model;
+    }
 
-        public boolean nearPoint(Point2f other) {
-            final int MAX_DELTA = 5;
-            return Math.abs(this.point.x - other.x) < MAX_DELTA && Math.abs(this.point.y - other.y) < MAX_DELTA;
+    private static class PolyModel {
+        public Model model;
+        public int poly = -2;
+
+        public PolyModel(int poly, Model model) {
+            this.poly = poly;
+            this.model = model;
+        }
+
+        public PolyModel() {
+            this.poly = -2;
+            this.model = new Model();
         }
     }
 
-    private static List<PointVertexModel> currentFramePoints = new ArrayList<>();
+    private static PointVertexModel selectedPVM = new PointVertexModel(-2);
+    private static PolyModel selectedPoly = new PolyModel();
 
-    private static int selectedVertex = -2;
-
-    public static void deleteVertex() {
-        for (PointVertexModel pvm : currentFramePoints) {
-            if (pvm.vertexIndex == selectedVertex) {
-                List<Integer> newPolyVertices = new ArrayList<>();
-                int nPoligons = pvm.model.polygons.size();
-                for (int i = 0; i < nPoligons; ++i) {
-                    Polygon poly = pvm.model.polygons.get(i);
-                    if (poly.getVertexIndices().contains(pvm.vertexIndex)) {
-                        poly.getVertexIndices().remove((Integer) pvm.vertexIndex);
-                        newPolyVertices.addAll(poly.getVertexIndices());
-                        pvm.model.polygons.remove(i);
-                        --i;
-                        --nPoligons;
-                    }
+    public static void performDelete() {
+        if (selectedPVM.vertexIndex > -2) {
+            int nPoligons = selectedPVM.model.polygons.size();
+            for (int i = 0; i < nPoligons; ++i) {
+                Polygon poly = selectedPVM.model.polygons.get(i);
+                if (poly.getVertexIndices().contains(selectedPVM.vertexIndex)) {
+                    poly.getVertexIndices().remove((Integer) selectedPVM.vertexIndex);
+                    selectedPVM.model.polygons.remove(i);
+                    --i;
+                    --nPoligons;
                 }
-                Polygon newPoly = new Polygon();
-                newPoly.getVertexIndices().addAll(newPolyVertices);
-                break;
             }
+            selectedPVM = new PointVertexModel(-2);
+        } else if (selectedPoly.poly > -2) {
+            selectedPoly.model.polygons.remove(selectedPoly.poly);
+            selectedPoly = new PolyModel();
         }
     }
 
     public static void findVertexIndexFromClick(Point2f mousePoint, Camera camera, List<Model> models, int width, int height) {
         for (Model mesh : models) {
             if (mesh.selected) {
+                boolean vertexFound = false;
+
                 Matrix4f modelMatrix = rotateScaleTranslate();
                 Matrix4f viewMatrix = camera.getViewMatrix();
                 Matrix4f projectionMatrix = camera.getProjectionMatrix();
@@ -97,16 +111,35 @@ public class RenderEngine {
                         Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
 
                         if (pointIsNearMouse(resultPoint, mousePoint)) {
-                            selectedVertex = mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd);
+                            selectedPVM = new PointVertexModel(resultPoint, mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd), mesh);
+                            vertexFound = true;
                         }
                     }
                 }
+                if (!vertexFound) {
+                    for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
+                        final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+                        List<Point2f> polyPoints = new ArrayList<>();
+                        for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+                            Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                            javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
+                            Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
+                            polyPoints.add(resultPoint);
+                        }
+                        if (isPointInside(mousePoint, polyPoints)) {
+                            selectedPoly = new PolyModel(polygonInd, mesh);
+                            return;
+                        }
+                    }
+                }
+                return;
             }
         }
     }
 
     public static void deselectVertex() {
-        selectedVertex = -2;
+        selectedPVM = new PointVertexModel(-2);
+        selectedPoly = new PolyModel();
     }
 
     private static boolean pointIsNearMouse(Point2f point, Point2f mousePoint) {
@@ -114,6 +147,20 @@ public class RenderEngine {
         return Math.abs(point.x - mousePoint.x) < MAX_DELTA && Math.abs(point.y - mousePoint.y) < MAX_DELTA;
     }
 
+    public static boolean isPointInside(Point2f testPoint, List<Point2f> vertices) {
+        int numVertices = vertices.size();
+        boolean inside = false;
+        for (int i = 0, j = numVertices - 1; i < numVertices; j = i++) {
+            Point2f vertexI = vertices.get(i);
+            Point2f vertexJ = vertices.get(j);
+
+            if ((vertexI.y > testPoint.y) != (vertexJ.y > testPoint.y) &&
+                    (testPoint.x < (vertexJ.x - vertexI.x) * (testPoint.y - vertexI.y) / (vertexJ.y - vertexI.y) + vertexI.x)) {
+                inside = !inside;
+            }
+        }
+        return inside;
+    }
 
     private static void renderModel(
             final GraphicsContext graphicsContext,
@@ -129,7 +176,6 @@ public class RenderEngine {
         modelViewProjectionMatrix.mul(viewMatrix);
         modelViewProjectionMatrix.mul(projectionMatrix);
 
-        currentFramePoints = new ArrayList<>();
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
@@ -141,7 +187,6 @@ public class RenderEngine {
                 javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
 
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath), width, height);
-                currentFramePoints.add(new PointVertexModel(resultPoint, mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd), mesh));
 
                 resultPoints.add(resultPoint);
             }
@@ -149,11 +194,25 @@ public class RenderEngine {
             graphicsContext.setStroke((mesh.selected) ? Color.BLACK : Color.GRAY);
 
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                graphicsContext.setStroke(
-                        (mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd) == selectedVertex
-                                || mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd - 1) == selectedVertex
-                        ) ? Color.RED : graphicsContext.getStroke()
-                );
+                if (mesh.selected) {
+                    graphicsContext.setStroke(
+                            (selectedPVM.vertexIndex > -2
+                                    && (mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd) == selectedPVM.vertexIndex
+                                    || mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd - 1) == selectedPVM.vertexIndex))
+                                    ? Color.RED
+                                    : graphicsContext.getStroke()
+                    );
+                    if (selectedPoly.poly > -2) {
+                        graphicsContext.setStroke(
+                                (polygonInd == selectedPoly.poly)
+                                        ? Color.BLUE
+                                        : graphicsContext.getStroke()
+                        );
+                        graphicsContext.setLineWidth((polygonInd == selectedPoly.poly)
+                                ? 2
+                                : 1);
+                    }
+                }
                 graphicsContext.strokeLine(
                         resultPoints.get(vertexInPolygonInd - 1).x,
                         resultPoints.get(vertexInPolygonInd - 1).y,

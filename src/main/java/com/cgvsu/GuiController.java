@@ -154,7 +154,7 @@ public class GuiController {
         });
 
         canvas.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.DELETE) RenderEngine.deleteVertex();
+            if (keyEvent.getCode() == KeyCode.DELETE) RenderEngine.performDelete();
         });
 
         canvas.setOnMouseClicked(mouseEvent -> {
