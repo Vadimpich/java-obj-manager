@@ -2,6 +2,7 @@ package com.cgvsu;
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
+import com.cgvsu.objreader.ObjWriter;
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.animation.Animation;
@@ -157,7 +158,6 @@ public class GuiController {
                 rightFlag = true;
             if (mouseEvent.getButton() == MouseButton.MIDDLE)
                 RenderEngine.deleteVertex(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()));
-            last = new Vector2f((float) mouseEvent.getX(), (float) mouseEvent.getY());
         });
 
         canvas.setOnMouseReleased(mouseEvent -> {
@@ -248,7 +248,10 @@ public class GuiController {
                 throwExceptionWindow();
             }
             translateModel(newModel, x, 0, 0);
-            newModel.selected = models.isEmpty();
+            if (models.isEmpty()) {
+                newModel.selected = true;
+                selectedModel = newModel;
+            }
             models.add(newModel);
             modelCenters.add(x);
             x += newModel.xSize;
@@ -284,6 +287,22 @@ public class GuiController {
         modelButton.getItems().add(lightingShow);
 
         modelsMenuBox.getChildren().add(modelButton);
+    }
+
+    @FXML
+    private void onSaveModelMenuItemClick() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj");
+        fileChooser.setTitle("Save Model");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog((Stage) canvas.getScene().getWindow());
+
+        if (file != null) {
+            ObjWriter.write(selectedModel, file.getAbsolutePath());
+        }
     }
 
     @FXML

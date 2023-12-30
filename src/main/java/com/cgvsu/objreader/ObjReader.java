@@ -154,9 +154,9 @@ public class ObjReader {
 
 		if (!model.getPolygons().isEmpty()) {
 			Polygon firstPolygon = model.getFirstPolygon();
-			if (polygon.hasTexture() != firstPolygon.hasTexture()) {
-				throw new TextureException(lineIndex);
-			}
+//			if (polygon.hasTexture() != firstPolygon.hasTexture()) {
+//				throw new TextureException(lineIndex);
+//			}
 		}
 
 		model.addPolygon(polygon);

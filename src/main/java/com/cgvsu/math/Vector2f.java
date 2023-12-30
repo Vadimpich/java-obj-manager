@@ -65,4 +65,8 @@ public class Vector2f {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    public String coordsToStringSplitBySpace() {
+        return String.format("%f %f", x, y);
+    }
 }

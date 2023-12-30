@@ -77,4 +77,8 @@ public class Vector3f {
     public int hashCode() {
         return Objects.hash(x, y, z);
     }
+
+    public String coordsToStringSplitBySpace() {
+        return String.format("%f %f %f", x, y, z);
+    }
 }

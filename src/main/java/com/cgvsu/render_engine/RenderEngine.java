@@ -54,19 +54,16 @@ public class RenderEngine {
     public static void deleteVertex(Point2f point) {
         System.out.printf("%f %f\n", point.x, point.y);
         for (PointVertexModel pvm : currentFramePoints) {
-            //System.out.printf("%f %f\n", pvm.point.x, pvm.point.y);
             if (pvm.nearPoint(point)) {
                 List<Integer> newPolyVertices = new ArrayList<>();
-                System.out.printf("Found %d\n", pvm.vertexIndex);
                 //pvm.model.vertices.remove(pvm.vertexIndex);
                 int nPoligons = pvm.model.polygons.size();
                 for (int i = 0; i < nPoligons; ++i) {
                     Polygon poly = pvm.model.polygons.get(i);
                     if (poly.getVertexIndices().contains(pvm.vertexIndex)) {
-                        System.out.printf("Poly found %d\n", i);
                         poly.getVertexIndices().remove((Integer) pvm.vertexIndex);
                         newPolyVertices.addAll(poly.getVertexIndices());
-                        System.out.println(pvm.model.polygons.remove(poly));
+                        pvm.model.polygons.remove(i);
                         --i;
                         --nPoligons;
                     }
@@ -100,7 +97,6 @@ public class RenderEngine {
 
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                //System.out.printf("%d %d\n", polygonInd, vertexInPolygonInd);
                 Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
                 javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(vertex.x, vertex.y, vertex.z);
