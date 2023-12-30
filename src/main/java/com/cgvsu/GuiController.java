@@ -10,14 +10,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import java.awt.event.KeyEvent;
+
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -112,7 +112,6 @@ public class GuiController {
     private Timeline timeline;
 
     private double maxFPS = 60;
-
     private KeyFrame frame = new KeyFrame(Duration.millis(1000 / maxFPS), event -> frameEvent());
 
     @FXML
@@ -153,15 +152,33 @@ public class GuiController {
             float deltaY = (float) scrollEvent.getDeltaY();
             handleMouseWheel(deltaY / 40 * TRANSLATION);
         });
-
         canvas.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY)
+                leftFlag = true;
+            if (mouseEvent.getButton() == MouseButton.SECONDARY)
+                rightFlag = true;
+            if (leftFlag){
+                int index = RenderEngine.findVertexIndexFromClick(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()), camera, models,(int) canvas.getWidth(),(int) canvas.getHeight());
+                System.out.println(index);
+            }
+
+
+        });
+        canvas.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.DELETE)) {
+                //Вадим делай делай давай давай
+            }
+        });
+
+
+        /*canvas.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY)
                 leftFlag = true;
             if (mouseEvent.getButton() == MouseButton.SECONDARY)
                 rightFlag = true;
             if (mouseEvent.getButton() == MouseButton.MIDDLE)
                 RenderEngine.deleteVertex(new Point2f((float) mouseEvent.getX(), (float) mouseEvent.getY()));
-        });
+        });*/
 
         canvas.setOnMouseReleased(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY)
@@ -190,7 +207,10 @@ public class GuiController {
             last = new Vector2f((float) event.getX(), (float) event.getY());
         });
     }
+    private void keyTyped(KeyEvent e) {
+        char keyChar = e.getKeyChar();
 
+    }
     void frameEvent() {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
@@ -248,7 +268,7 @@ public class GuiController {
             addToModelsList(fileName);
             Model newModel = ObjReader.read(fileContent);
             if (newModel == null) {
-                throwExceptionWindow();
+                throwExceptionWindow(ExceptionDialog.Operation.READING);
             }
             translateModel(newModel, x, 0, 0);
             if (models.isEmpty()) {
@@ -259,8 +279,8 @@ public class GuiController {
             modelCenters.add(x);
             x += newModel.xSize;
         } catch (Exception exception) {
-            throwExceptionWindow();
-            throw exception;
+            throwExceptionWindow(ExceptionDialog.Operation.READING);
+
         }
     }
 
@@ -450,6 +470,7 @@ public class GuiController {
     public void handleCameraDown(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
     }
+
 
     @FXML
     public void handleMouseWheel(float delta) {

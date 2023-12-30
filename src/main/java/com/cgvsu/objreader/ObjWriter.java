@@ -1,11 +1,13 @@
 package com.cgvsu.objreader;
 
+import com.cgvsu.ExceptionDialog;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -25,8 +27,8 @@ public class ObjWriter {
             writeTextureVerticesOfModel(printWriter, model.getTextureVertices());
             writeNormalsOfModel(printWriter, model.getNormals());
             writePolygonsOfModel(printWriter, model.getPolygons());
-        } catch (IOException e) {
-            throw new ObjWriterException("Error writing model to obj file: " + fileName + " " + e.getMessage());
+        } catch (RuntimeException | FileNotFoundException e) {
+            ExceptionDialog.throwExceptionWindow(ExceptionDialog.Operation.WRITING);
         }
     }
 
