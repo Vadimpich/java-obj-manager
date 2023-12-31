@@ -1,13 +1,13 @@
-package main.java.cgvsu.affinetransformations;
+package com.cgvsu.affinetransformations;
 
-import main.java.cgvsu.math.matrix.Matrix4f;
-import main.java.cgvsu.math.vector.Vector4f;
-import main.java.cgvsu.model.Model;
+import javax.vecmath.Matrix4f;
+import com.cgvsu.math.Vector4f;
+import com.cgvsu.model.Model;
 
 public class ModelTransformer {
 
-    private final Vector4f intermediateCalculationVector = new Vector4f(new float[]{0, 0, 0, 1});
-    private Matrix4f transformingMatrix = new Matrix4f();
+    private final Vector4f intermediateCalculationVector = new Vector4f(0, 0, 0, 1);
+    private Matrix4f transformingMatrix;
 
     public ModelTransformer(Matrix4f transformingMatrix) {
         this.transformingMatrix = transformingMatrix;
@@ -19,7 +19,7 @@ public class ModelTransformer {
             intermediateCalculationVector.y = v.y;
             intermediateCalculationVector.z = v.z;
 
-            transformingMatrix.mul(intermediateCalculationVector);
+            //transformingMatrix.mul(intermediateCalculationVector);
 
             v.x = intermediateCalculationVector.x;
             v.y = intermediateCalculationVector.y;
