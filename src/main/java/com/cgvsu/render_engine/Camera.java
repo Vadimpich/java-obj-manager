@@ -40,11 +40,12 @@ public class Camera {
     }
 
     public void movePosition(final Vector3f translation) {
+
         this.position.add(translation);
     }
 
     public void moveTarget(final Vector3f translation) {
-        this.target.add(target);
+        this.target.add(translation);
     }
 
     Matrix4f getViewMatrix() {
@@ -61,4 +62,16 @@ public class Camera {
     private float aspectRatio;
     private float nearPlane;
     private float farPlane;
+
+    public int getCenteredModel() {
+        return centeredModel;
+    }
+
+    public void setCenteredModel(int centeredModel) {
+        this.centeredModel = centeredModel;
+    }
+
+    private int centeredModel = 0;
+
+    public Boolean isVisible = true;
 }
